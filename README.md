@@ -74,33 +74,3 @@ def inner_product(self, v, w):
                 orthonormal_basis.append(w / norm)
 
         return orthonormal_basis
-
-    def verify_gram_schmidt(self, processed_vectors):
-        """
-        Verifies if a set of vectors follows the Gram-Schmidt process.
-        Parameters:
-            processed_vectors (list of numpy arrays): Vectors to verify.
-        Returns:
-            bool: True if the vectors follow the Gram-Schmidt process, False otherwise.
-        """
-        # Check orthogonality
-        for i in range(len(processed_vectors)):
-            for j in range(i + 1, len(processed_vectors)):
-                dot_product = self.inner_product(processed_vectors[i], processed_vectors[j])
-                if not np.isclose(dot_product, 0, atol=1e-10):
-                    return False, "Vectors are not orthogonal."
-
-        # Check normalization
-        for vec in processed_vectors:
-            if not np.isclose(np.linalg.norm(vec), 1, atol=1e-10):
-                return False, "Vectors are not normalized."
-
-        # Check projection consistency
-        for i, v in enumerate(self.vectors):
-            reconstructed = np.zeros_like(v, dtype=np.float64)
-            for u in processed_vectors:
-                reconstructed += self.inner_product(v, u) * u
-            if not np.allclose(v, reconstructed, atol=1e-10):
-                return False, f"Vector {i+1} does not match its projection."
-
-        return True, "Vectors follow the Gram-Schmidt process."
