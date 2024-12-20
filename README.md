@@ -11,12 +11,6 @@ class GramSchmidt:
     def validate_vectors(self, vectors):
         """
         Validates a set of vectors for consistency and requirements.
-        Parameters:
-            vectors (list of lists or numpy arrays): The input vectors to validate.
-        Returns:
-            list of numpy arrays: The validated vectors (possibly truncated).
-        Raises:
-            ValueError: If input vectors fail any of the validation checks.
         """
         vectors = [np.array(vec) for vec in vectors]
 
@@ -48,5 +42,11 @@ class GramSchmidt:
             if vec_tuple in seen:
                 raise ValueError(f"Duplicate vector found at index {i+1}.")
             seen.add(vec_tuple)
+
+        # Check for linear independence
+        matrix = np.stack(vectors)
+        rank = np.linalg.matrix_rank(matrix)
+        if rank < len(vectors):
+            raise ValueError("The input vectors are not linearly independent.")
 
         return vectors
